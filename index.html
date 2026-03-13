@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>김윤슬 백일 🎀</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Fredoka+One&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ffe4f0 0%, #f3e4ff 50%, #ffeaf5 100%);
+    font-family: 'Noto Sans KR', sans-serif;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Confetti Canvas */
+  #confetti-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+  }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding-top: 20px;
+  }
+
+  .hero .emoji-row {
+    font-size: 2rem;
+    letter-spacing: 8px;
+    margin-bottom: 12px;
+    animation: bounce 1.8s infinite alternate;
+  }
+
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-8px); }
+  }
+
+  .hero h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2.2rem, 8vw, 3.6rem);
+    background: linear-gradient(135deg, #ff85b3, #c77dff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .hero .subtitle {
+    font-size: 1rem;
+    color: #c084b8;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+
+  /* Photo area */
+  .photo-section {
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .photo-frame {
+    width: 220px;
+    height: 260px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.7);
+    border: 3px dashed #f0aacc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+    position: relative;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 8px 30px rgba(255,170,210,0.25);
+  }
+
+  .photo-frame:hover {
+    transform: translateY(-4px) rotate(1deg);
+    box-shadow: 0 14px 40px rgba(200,130,255,0.3);
+  }
+
+  .photo-frame img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+  }
+
+  .photo-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #d8a0c8;
+  }
+
+  .photo-placeholder .icon { font-size: 2.4rem; }
+  .photo-placeholder p { font-size: 0.8rem; text-align: center; line-height: 1.4; }
+
+  input[type="file"] { display: none; }
+
+  .photo-frame .corner {
+    position: absolute;
+    width: 18px; height: 18px;
+    border-color: #f0aacc;
+    border-style: solid;
+  }
+  .corner.tl { top: 8px; left: 8px; border-width: 3px 0 0 3px; border-radius: 4px 0 0 0; }
+  .corner.tr { top: 8px; right: 8px; border-width: 3px 3px 0 0; border-radius: 0 4px 0 0; }
+  .corner.bl { bottom: 8px; left: 8px; border-width: 0 0 3px 3px; border-radius: 0 0 0 4px; }
+  .corner.br { bottom: 8px; right: 8px; border-width: 0 3px 3px 0; border-radius: 0 0 4px 0; }
+
+  /* Letter card */
+  .letter-card {
+    width: 100%;
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(12px);
+    border-radius: 28px;
+    padding: 40px 36px;
+    box-shadow: 0 8px 40px rgba(210,150,255,0.2);
+    border: 1.5px solid rgba(255,190,230,0.5);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .letter-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(255,170,210,0.3), transparent 70%);
+    border-radius: 50%;
+  }
+
+  .letter-card .happy {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, #ff6eb4, #b980f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+    display: block;
+  }
+
+  .letter-card .message {
+    font-size: 1.15rem;
+    color: #8a5a8a;
+    line-height: 1.9;
+    font-weight: 300;
+  }
+
+  .letter-card .hearts {
+    font-size: 1.6rem;
+    margin-top: 20px;
+    letter-spacing: 6px;
+    animation: pulse 1.5s infinite alternate;
+  }
+
+  @keyframes pulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.12); }
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    color: #c090c0;
+    font-size: 0.85rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+  }
+
+  .footer .date-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.6);
+    border: 1.5px solid rgba(240,170,210,0.5);
+    border-radius: 50px;
+    padding: 8px 24px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #b07ab0;
+    backdrop-filter: blur(6px);
+  }
+
+  .deco-stars {
+    font-size: 1.1rem;
+    letter-spacing: 8px;
+    opacity: 0.6;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="page-wrapper">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="emoji-row">🎀 🌸 💜</div>
+    <h1>100 Days</h1>
+    <p class="subtitle">김 윤 슬 · 축 백 일</p>
+  </div>
+
+  <!-- Photos -->
+  <div class="photo-section">
+    <label class="photo-frame" for="photo1">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <div class="photo-placeholder" id="placeholder1">
+        <span class="icon">🌸</span>
+        <p>사진을 눌러<br>업로드하세요</p>
+      </div>
+      <input type="file" id="photo1" accept="image/*" onchange="loadPhoto(this, 'placeholder1')">
+    </label>
+
+    <label class="photo-frame" for="photo2">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <div class="photo-placeholder" id="placeholder2">
+        <span class="icon">💜</span>
+        <p>사진을 눌러<br>업로드하세요</p>
+      </div>
+      <input type="file" id="photo2" accept="image/*" onchange="loadPhoto(this, 'placeholder2')">
+    </label>
+  </div>
+
+  <!-- Letter -->
+  <div class="letter-card">
+    <span class="happy">HAPPY 100 DAYS!</span>
+    <p class="message">윤슬이의 백일을 축하해</p>
+    <div class="hearts">🩷 🩷 🩷</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="date-badge">🎂 2025년 10월 5일 · 백일</div>
+    <div class="deco-stars">✨ ⭐ ✨</div>
+  </div>
+
+</div>
+
+<script>
+// Photo upload
+function loadPhoto(input, placeholderId) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const frame = input.parentElement;
+    const ph = document.getElementById(placeholderId);
+    ph.style.display = 'none';
+    let img = frame.querySelector('img');
+    if (!img) { img = document.createElement('img'); frame.appendChild(img); }
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// Confetti
+const canvas = document.getElementById('confetti-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, pieces = [];
+
+const colors = ['#ff85b3','#f5a7d6','#c77dff','#d4a7ff','#ffb3d1','#e8b4ff','#ff6eb4','#b980f0','#ffd6ea','#e2c1ff'];
+const shapes = ['circle','rect','star'];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+function randomPiece() {
+  return {
+    x: Math.random() * W,
+    y: Math.random() * -H,
+    r: Math.random() * 7 + 4,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    shape: shapes[Math.floor(Math.random() * shapes.length)],
+    vx: (Math.random() - 0.5) * 0.6,
+    vy: Math.random() * 2 + 1,
+    angle: Math.random() * Math.PI * 2,
+    va: (Math.random() - 0.5) * 0.06,
+    opacity: Math.random() * 0.5 + 0.5
+  };
+}
+
+for (let i = 0; i < 120; i++) {
+  const p = randomPiece();
+  p.x = Math.random() * W;
+  p.y = Math.random() * H;
+  pieces.push(p);
+}
+
+function drawStar(cx, cy, r, angle) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(angle);
+  ctx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    const a1 = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+    const a2 = ((i * 4 + 2) * Math.PI) / 5 - Math.PI / 2;
+    ctx.lineTo(Math.cos(a1) * r, Math.sin(a1) * r);
+    ctx.lineTo(Math.cos(a2) * (r * 0.45), Math.sin(a2) * (r * 0.45));
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function animate() {
+  ctx.clearRect(0, 0, W, H);
+  pieces.forEach(p => {
+    ctx.globalAlpha = p.opacity;
+    ctx.fillStyle = p.color;
+    if (p.shape === 'circle') {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (p.shape === 'rect') {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.fillRect(-p.r, -p.r * 0.5, p.r * 2, p.r);
+      ctx.restore();
+    } else {
+      drawStar(p.x, p.y, p.r, p.angle);
+    }
+    p.x += p.vx;
+    p.y += p.vy;
+    p.angle += p.va;
+    if (p.y > H + 20) {
+      Object.assign(p, randomPiece());
+    }
+  });
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>
