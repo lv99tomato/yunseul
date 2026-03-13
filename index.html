@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>김윤슬 백일 🎀</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Fredoka+One&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Fredoka+One&family=Cormorant+Garamond:ital,wght@1,400;1,600&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -79,14 +79,17 @@
   .photo-section {
     width: 100%;
     display: flex;
-    gap: 20px;
+    flex-direction: row;
+    gap: 16px;
     justify-content: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
   }
 
   .photo-frame {
-    width: 220px;
-    height: 260px;
+    width: 46vw;
+    max-width: 220px;
+    height: 56vw;
+    max-height: 260px;
     border-radius: 24px;
     background: rgba(255,255,255,0.7);
     border: 3px dashed #f0aacc;
@@ -173,7 +176,9 @@
   }
 
   .letter-card .message {
-    font-size: 1.15rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.25rem;
     color: #8a5a8a;
     line-height: 1.9;
     font-weight: 300;
@@ -249,7 +254,7 @@
   <!-- Letter -->
   <div class="letter-card">
     <span class="happy">HAPPY 100 DAYS!</span>
-    <p class="message">윤슬이의 백일을 축하해</p>
+    <p class="message">윤슬이의 백일을 축하해!<br>엄마 아빠랑 늘 건강하고 웃음 가득하게 살아가는 윤슬이가 되기를 :)</p>
     <div class="hearts">🩷 🩷 🩷</div>
   </div>
 
@@ -296,7 +301,7 @@ function randomPiece() {
   return {
     x: Math.random() * W,
     y: Math.random() * -H,
-    r: Math.random() * 7 + 4,
+    r: Math.random() * 5 + 3,
     color: colors[Math.floor(Math.random() * colors.length)],
     shape: shapes[Math.floor(Math.random() * shapes.length)],
     vx: (Math.random() - 0.5) * 1.2,
@@ -309,7 +314,7 @@ function randomPiece() {
   };
 }
 
-for (let i = 0; i < 120; i++) {
+for (let i = 0; i < 50; i++) {
   const p = randomPiece();
   p.x = Math.random() * W;
   p.y = Math.random() * H;
@@ -317,9 +322,9 @@ for (let i = 0; i < 120; i++) {
 }
 
 setInterval(() => {
-  for (let i = 0; i < 2; i++) pieces.push(randomPiece());
-  if (pieces.length > 300) pieces.splice(0, pieces.length - 300);
-}, 200);
+  pieces.push(randomPiece());
+  if (pieces.length > 80) pieces.splice(0, pieces.length - 80);
+}, 300);
 
 function drawStar(cx, cy, r, angle) {
   ctx.save();
