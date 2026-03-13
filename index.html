@@ -234,25 +234,16 @@
 
   <!-- Photos -->
   <div class="photo-section">
-    <label class="photo-frame" for="photo1">
+    <div class="photo-frame">
       <div class="corner tl"></div><div class="corner tr"></div>
       <div class="corner bl"></div><div class="corner br"></div>
-      <div class="photo-placeholder" id="placeholder1">
-        <span class="icon">🌸</span>
-        <p>사진을 눌러<br>업로드하세요</p>
-      </div>
-      <input type="file" id="photo1" accept="image/*" onchange="loadPhoto(this, 'placeholder1')">
-    </label>
-
-    <label class="photo-frame" for="photo2">
+      <img src="{00BDB084-60D1-4D8C-864A-8189882CFAC3}.png" style="width:100%;height:100%;object-fit:cover;border-radius:20px;">
+    </div>
+    <div class="photo-frame">
       <div class="corner tl"></div><div class="corner tr"></div>
       <div class="corner bl"></div><div class="corner br"></div>
-      <div class="photo-placeholder" id="placeholder2">
-        <span class="icon">💜</span>
-        <p>사진을 눌러<br>업로드하세요</p>
-      </div>
-      <input type="file" id="photo2" accept="image/*" onchange="loadPhoto(this, 'placeholder2')">
-    </label>
+      <img src="{80446E71-D74C-437E-8340-F80269402BB7}.png" style="width:100%;height:100%;object-fit:cover;border-radius:20px;">
+    </div>
   </div>
 
   <!-- Letter -->
@@ -264,7 +255,7 @@
 
   <!-- Footer -->
   <div class="footer">
-    <div class="date-badge">🎂 2025년 10월 5일 · 백일</div>
+    <div class="date-badge">🎂 2026년 3월 2일 · 백일</div>
     <div class="deco-stars">✨ ⭐ ✨</div>
   </div>
 
@@ -308,11 +299,13 @@ function randomPiece() {
     r: Math.random() * 7 + 4,
     color: colors[Math.floor(Math.random() * colors.length)],
     shape: shapes[Math.floor(Math.random() * shapes.length)],
-    vx: (Math.random() - 0.5) * 0.6,
-    vy: Math.random() * 2 + 1,
+    vx: (Math.random() - 0.5) * 1.2,
+    vy: Math.random() * 1.8 + 0.8,
+    gravity: 0,
     angle: Math.random() * Math.PI * 2,
     va: (Math.random() - 0.5) * 0.06,
-    opacity: Math.random() * 0.5 + 0.5
+    opacity: Math.random() * 0.5 + 0.5,
+    fade: 0
   };
 }
 
@@ -322,6 +315,11 @@ for (let i = 0; i < 120; i++) {
   p.y = Math.random() * H;
   pieces.push(p);
 }
+
+setInterval(() => {
+  for (let i = 0; i < 2; i++) pieces.push(randomPiece());
+  if (pieces.length > 300) pieces.splice(0, pieces.length - 300);
+}, 200);
 
 function drawStar(cx, cy, r, angle) {
   ctx.save();
